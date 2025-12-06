@@ -125,15 +125,44 @@ export default function AdminProductModal({ show, type, product, onClose, onSave
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold mb-2 text-neutral-700">Image URL</label>
-                        <input
-                            type="url"
-                            value={formData.images[0]}
-                            onChange={(e) => setFormData({ ...formData, images: [e.target.value] })}
-                            className="w-full p-4 border-2 border-neutral-200 rounded-xl focus:border-primary-500 focus:outline-none transition-colors"
-                            placeholder="https://example.com/image.jpg"
-                        />
-                        <p className="text-xs text-neutral-500 mt-1">Enter a valid image URL</p>
+                        <label className="block text-sm font-semibold mb-2 text-neutral-700">Product Images</label>
+                        <div className="space-y-3">
+                            {formData.images.map((url, index) => (
+                                <div key={index} className="flex gap-2">
+                                    <input
+                                        type="url"
+                                        value={url}
+                                        onChange={(e) => {
+                                            const newImages = [...formData.images];
+                                            newImages[index] = e.target.value;
+                                            setFormData({ ...formData, images: newImages });
+                                        }}
+                                        className="flex-1 p-3 border-2 border-neutral-200 rounded-xl focus:border-primary-500 focus:outline-none transition-colors"
+                                        placeholder={`Image URL ${index + 1}`}
+                                    />
+                                    {formData.images.length > 1 && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const newImages = formData.images.filter((_, i) => i !== index);
+                                                setFormData({ ...formData, images: newImages });
+                                            }}
+                                            className="p-3 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-xl transition-colors"
+                                            title="Remove Image"
+                                        >
+                                            ✕
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+                            <button
+                                type="button"
+                                onClick={() => setFormData({ ...formData, images: [...formData.images, ''] })}
+                                className="text-sm font-semibold text-primary-600 hover:text-primary-700 flex items-center gap-1"
+                            >
+                                + Add Another Image
+                            </button>
+                        </div>
                     </div>
 
                     <div className="flex gap-4 pt-6 border-t border-neutral-200">

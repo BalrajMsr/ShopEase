@@ -98,8 +98,8 @@ export default function AdminProductsTable({ products, onEdit, onDelete }) {
                                 key={cat}
                                 onClick={() => setCategoryFilter(cat)}
                                 className={`px-4 py-2 rounded-lg font-semibold transition-all ${categoryFilter === cat
-                                        ? 'bg-gradient-primary text-white shadow-md'
-                                        : 'bg-white border-2 border-neutral-200 hover:border-primary-300'
+                                    ? 'bg-gradient-primary text-white shadow-md'
+                                    : 'bg-white border-2 border-neutral-200 hover:border-primary-300'
                                     }`}
                             >
                                 {cat === 'all' ? 'All Categories' : cat}
@@ -119,8 +119,8 @@ export default function AdminProductsTable({ products, onEdit, onDelete }) {
                                 key={filter.value}
                                 onClick={() => setStockFilter(filter.value)}
                                 className={`px-4 py-2 rounded-lg font-semibold transition-all ${stockFilter === filter.value
-                                        ? 'bg-gradient-accent text-white shadow-md'
-                                        : 'bg-white border-2 border-neutral-200 hover:border-accent-300'
+                                    ? 'bg-gradient-accent text-white shadow-md'
+                                    : 'bg-white border-2 border-neutral-200 hover:border-accent-300'
                                     }`}
                             >
                                 <span className="mr-1">{filter.icon}</span>
@@ -142,6 +142,7 @@ export default function AdminProductsTable({ products, onEdit, onDelete }) {
                     <table className="w-full">
                         <thead className="bg-gradient-primary text-white">
                             <tr>
+                                <th className="px-6 py-4 text-left"></th>
                                 <th className="px-6 py-4 text-left">Product</th>
                                 <th className="px-6 py-4 text-left">Category</th>
                                 <th className="px-6 py-4 text-left">Price</th>
@@ -153,13 +154,16 @@ export default function AdminProductsTable({ products, onEdit, onDelete }) {
                         <tbody>
                             {filteredProducts.length === 0 ? (
                                 <tr>
-                                    <td colSpan="6" className="px-6 py-12 text-center text-neutral-600">
+                                    <td colSpan="7" className="px-6 py-12 text-center text-neutral-600">
                                         No products found matching your filters
                                     </td>
                                 </tr>
                             ) : (
                                 filteredProducts.map((product, index) => (
                                     <tr key={product._id} className={index % 2 === 0 ? 'bg-white/50' : 'bg-white/20'}>
+                                        <td className="px-6 py-4 font-semibold">
+                                            <img src={product.images[0]} alt={product.name} className="w-16 h-16 object-cover" />
+                                        </td>
                                         <td className="px-6 py-4 font-semibold">{product.name}</td>
                                         <td className="px-6 py-4">
                                             <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
@@ -169,16 +173,16 @@ export default function AdminProductsTable({ products, onEdit, onDelete }) {
                                         <td className="px-6 py-4 font-bold">₹{product.price}</td>
                                         <td className="px-6 py-4">
                                             <span className={`font-semibold ${(product.stock || 0) === 0 ? 'text-red-600' :
-                                                    (product.stock || 0) < 10 ? 'text-orange-600' :
-                                                        'text-green-600'
+                                                (product.stock || 0) < 10 ? 'text-orange-600' :
+                                                    'text-green-600'
                                                 }`}>
                                                 {product.stock || 0}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`px-3 py-1 rounded-full text-xs font-bold ${(product.stock || 0) === 0 ? 'bg-red-100 text-red-700' :
-                                                    (product.stock || 0) < 10 ? 'bg-orange-100 text-orange-700' :
-                                                        'bg-green-100 text-green-700'
+                                                (product.stock || 0) < 10 ? 'bg-orange-100 text-orange-700' :
+                                                    'bg-green-100 text-green-700'
                                                 }`}>
                                                 {(product.stock || 0) === 0 ? 'Out of Stock' :
                                                     (product.stock || 0) < 10 ? 'Low Stock' :
@@ -186,18 +190,22 @@ export default function AdminProductsTable({ products, onEdit, onDelete }) {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <button
-                                                onClick={() => onEdit(product)}
-                                                className="px-4 py-2 bg-blue-500 text-white rounded-lg mr-2 hover:bg-blue-600 transition-colors"
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                onClick={() => onDelete(product._id)}
-                                                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-                                            >
-                                                Delete
-                                            </button>
+                                            <div className="flex justify-end gap-2">
+                                                <button
+                                                    onClick={() => onEdit(product)}
+                                                    className="p-2 text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                                                    title="Edit Product"
+                                                >
+                                                    ✏️
+                                                </button>
+                                                <button
+                                                    onClick={() => onDelete(product._id)}
+                                                    className="p-2 text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+                                                    title="Delete Product"
+                                                >
+                                                    🗑️
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))

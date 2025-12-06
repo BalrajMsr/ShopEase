@@ -1,17 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { fetchUserOrders } from "../features/ordersSlice";
+import { fetchUserOrders, cancelOrder } from "../features/ordersSlice";
 import Navbar from "../components/Navbar";
+import { useAlert } from "../context/AlertContext";
 
 export default function OrdersPage() {
     const user = useSelector(state => state.user.userInfo);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const { showAlert, showConfirm } = useAlert();
 
     // Get orders from Redux
     const { userOrders: orders, orderStatus: loading, error } = useSelector(state => state.orders);
     const [filter, setFilter] = useState('all'); // all, pending, delivered, cancelled
+
+    const handleCancelOrder = async (orderId) => {
+        const confirmed = await showConfirm(
+            'Are you sure you want to cancel this order?',
+            'Cancel Order'
+        );
+
+        if (confirmed) {
+            try {
+                await dispatch(cancelOrder(orderId)).unwrap();
+                showAlert('Order cancelled successfully', 'success');
+            } catch (err) {
+                showAlert(`Failed to cancel order: ${err.message}`, 'error');
+            }
+        }
+    };
 
     // Redirect if not logged in and fetch orders
     useEffect(() => {
@@ -155,9 +173,10 @@ export default function OrdersPage() {
                                     <div className="flex gap-3">
                                         <button
                                             onClick={() => navigate(`/orders/${order._id}`)}
-                                            className="px-6 py-3 bg-white border-2 border-neutral-200 rounded-xl font-semibold hover:bg-neutral-50 transition-colors"
+                                            className="p-3 bg-white border-2 border-neutral-200 rounded-xl font-semibold hover:bg-neutral-50 transition-colors text-blue-600"
+                                            title="View Details"
                                         >
-                                            View Details
+                                            📄
                                         </button>
                                         {order.orderStatus === 'delivered' && (
                                             <button className="px-6 py-3 bg-gradient-primary text-white rounded-xl font-semibold hover-lift shadow-md">
@@ -165,7 +184,10 @@ export default function OrdersPage() {
                                             </button>
                                         )}
                                         {order.orderStatus === 'pending' && (
-                                            <button className="px-6 py-3 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 transition-colors">
+                                            <button
+                                                onClick={() => handleCancelOrder(order._id)}
+                                                className="px-6 py-3 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 transition-colors"
+                                            >
                                                 Cancel Order
                                             </button>
                                         )}

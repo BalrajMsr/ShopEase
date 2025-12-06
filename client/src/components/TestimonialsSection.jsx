@@ -5,8 +5,8 @@ export default function TestimonialsSection({ testimonials }) {
         <section id="testimonials" className="py-20 px-6 bg-gradient-dark text-white">
             <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                        What Our <span className="text-cyan-400">Customers Say</span>
+                    <h2 className="text-4xl md:text-5xl font-bold mb-4 gradient-text">
+                        What Our <span className="!text-cyan-400">Customers Say</span>
                     </h2>
                     <p className="text-xl text-neutral-300">Join thousands of satisfied shoppers</p>
                 </div>

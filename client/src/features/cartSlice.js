@@ -85,8 +85,7 @@ const cartSlice = createSlice({
       .addCase(fetchCart.fulfilled, (state, action) => {
         if (action.payload) {
           state.items = action.payload;
-          // We don't sync server cart to local storage to avoid conflicts
-          // localStorage.setItem("cartItems", JSON.stringify(state.items));
+          localStorage.setItem("cartItems", JSON.stringify(state.items));
         }
       })
 
@@ -102,8 +101,8 @@ const cartSlice = createSlice({
           } else {
             state.items.push(item);
           }
-          localStorage.setItem("cartItems", JSON.stringify(state.items));
         }
+        localStorage.setItem("cartItems", JSON.stringify(state.items));
       })
 
       // Remove from Cart
@@ -113,16 +112,16 @@ const cartSlice = createSlice({
         } else {
           const productId = action.payload.data;
           state.items = state.items.filter(i => i.product !== productId);
-          localStorage.setItem("cartItems", JSON.stringify(state.items));
         }
+        localStorage.setItem("cartItems", JSON.stringify(state.items));
       })
 
       // Clear Cart
       .addCase(clearCart.fulfilled, (state, action) => {
         state.items = [];
-        if (action.payload.type === 'local') {
-          localStorage.removeItem("cartItems");
-        }
+        // Always clear local storage to ensure no stale data persists, 
+        // regardless of whether we were in API or local mode.
+        localStorage.removeItem("cartItems");
       });
   }
 });

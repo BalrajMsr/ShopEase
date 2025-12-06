@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ProfileDropdown from "./ProfileDropdown";
+import Logo from "../assets/shop_ease_logo.png";
 
 export default function Navbar() {
   const cart = useSelector(state => state.cart);
@@ -20,8 +21,9 @@ export default function Navbar() {
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 outline-none focus:outline-none ${scrolled ? 'glass shadow-lg' : 'bg-white/80 backdrop-blur-sm'}`}>
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <Link to={user?.user?.role === 'admin' ? "/admin" : "/"} className="text-2xl font-bold gradient-text hover:scale-105 transition-transform">
-          ShopEase
+        <Link to={user?.user?.role === 'admin' ? "/admin" : "/home"} className="flex items-center gap-2">
+          <img className="w-10 h-10" src={Logo} alt="shop ease logo" />
+          <h1 className="text-2xl font-bold gradient-text">ShopEase</h1>
         </Link>
 
         <div className="flex items-center gap-6">

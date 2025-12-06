@@ -19,6 +19,12 @@ export const fetchOrderById = createAsyncThunk("orders/fetchById", async (id, { 
     return await ordersAPI.getById(id, user.userInfo?.token);
 });
 
+// Cancel order
+export const cancelOrder = createAsyncThunk("orders/cancel", async (id, { getState }) => {
+    const { user } = getState();
+    return await ordersAPI.cancel(id, user.userInfo?.token);
+});
+
 const ordersSlice = createSlice({
     name: "orders",
     initialState: {
@@ -78,6 +84,15 @@ const ordersSlice = createSlice({
             .addCase(fetchOrderById.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.error.message;
+            })
+
+            // Cancel order
+            .addCase(cancelOrder.fulfilled, (state, action) => {
+                state.currentOrder = action.payload;
+                const index = state.userOrders.findIndex(o => o._id === action.payload._id);
+                if (index !== -1) {
+                    state.userOrders[index] = action.payload;
+                }
             });
     }
 });

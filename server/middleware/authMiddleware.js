@@ -10,9 +10,7 @@ export const protect = async (req, res, next) => {
   const token = authHeader.split(" ")[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("Decoded token:", decoded);
     const user = await User.findById(decoded.id).select("-password");
-    console.log("Authenticated user:", user);
     req.user = user;
     next();
   } catch (err) {

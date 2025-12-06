@@ -15,7 +15,6 @@ export const getWishlistByUser = async (req, res) => {
 export const addToWishlist = async (req, res) => {
   try {
     const { product } = req.body;
-    console.log("Adding product to wishlist:", product);
     let wishlist = await Wishlist.findOne({ user: req.user._id });
     if (!wishlist) {
       wishlist = new Wishlist({ user: req.user._id, products: [] });

@@ -13,9 +13,12 @@ import AdminProductsTable from "../components/admin/AdminProductsTable";
 import AdminOrdersTable from "../components/admin/AdminOrdersTable";
 import AdminProductModal from "../components/admin/AdminProductModal";
 
+import { useAlert } from "../context/AlertContext";
+
 export default function AdminDashboard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
 
   // Redux state
   const user = useSelector(s => s.user.userInfo);
@@ -36,7 +39,7 @@ export default function AdminDashboard() {
     }
 
     if (user?.user?.role !== 'admin') {
-      alert('Access Denied: Admin privileges required');
+      showAlert('Access Denied: Admin privileges required', 'error');
       navigate('/');
       return;
     }
@@ -77,9 +80,9 @@ export default function AdminDashboard() {
 
     try {
       await dispatch(deleteProduct(productId)).unwrap();
-      alert('Product deleted successfully!');
+      showAlert('Product deleted successfully!', 'success');
     } catch (error) {
-      alert(`Delete failed: ${error.message || 'Please try again'}`);
+      showAlert(`Delete failed: ${error.message || 'Please try again'}`, 'error');
     }
   };
 
@@ -87,23 +90,23 @@ export default function AdminDashboard() {
     try {
       if (modalType === 'add') {
         await dispatch(addProduct(formData)).unwrap();
-        alert('Product added successfully!');
+        showAlert('Product added successfully!', 'success');
       } else {
         await dispatch(updateProduct({ id: selectedProduct._id, data: formData })).unwrap();
-        alert('Product updated successfully!');
+        showAlert('Product updated successfully!', 'success');
       }
       setShowModal(false);
     } catch (error) {
-      alert(`Save failed: ${error.message || 'Please try again'}`);
+      showAlert(`Save failed: ${error.message || 'Please try again'}`, 'error');
     }
   };
 
-  const handleUpdateOrderStatus = async (orderId, newStatus) => {
+  const handleUpdateOrderStatus = async (orderId, updates) => {
     try {
-      await dispatch(updateOrderStatus({ orderId, status: newStatus })).unwrap();
+      await dispatch(updateOrderStatus({ orderId, ...updates })).unwrap();
       // Success feedback is handled by the component
     } catch (error) {
-      alert(`Update failed: ${error.message || 'Please try again'}`);
+      showAlert(`Update failed: ${error.message || 'Please try again'}`, 'error');
     }
   };
 
@@ -190,8 +193,8 @@ export default function AdminDashboard() {
                           <div className="text-right">
                             <div className="font-bold text-lg">₹{(order.totalAmount || order.total || 0).toFixed(2)}</div>
                             <div className={`text-xs px-3 py-1 rounded-full inline-block ${(order.orderStatus || order.status) === 'delivered' ? 'bg-green-100 text-green-700' :
-                                (order.orderStatus || order.status) === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                                  'bg-blue-100 text-blue-700'
+                              (order.orderStatus || order.status) === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                                'bg-blue-100 text-blue-700'
                               }`}>
                               {order.orderStatus || order.status}
                             </div>
@@ -332,7 +335,6 @@ export default function AdminDashboard() {
                             <th className="px-6 py-4 text-left">Email</th>
                             <th className="px-6 py-4 text-left">Role</th>
                             <th className="px-6 py-4 text-left">Joined</th>
-                            <th className="px-6 py-4 text-right">Actions</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -347,11 +349,6 @@ export default function AdminDashboard() {
                                 </span>
                               </td>
                               <td className="px-6 py-4">{new Date(user.createdAt || Date.now()).toLocaleDateString()}</td>
-                              <td className="px-6 py-4 text-right">
-                                <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-                                  View
-                                </button>
-                              </td>
                             </tr>
                           ))}
                         </tbody>

@@ -61,7 +61,7 @@ export default function CartPage() {
                   className="glass rounded-2xl p-6 hover-lift animate-scale-in"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <div className="flex gap-6">
+                  <div className="flex gap-6 md:flex-row flex-col">
                     <div className="w-24 h-24 bg-gradient-to-br from-purple-100 to-cyan-100 rounded-xl overflow-hidden flex-shrink-0">
                       <img
                         src={item.images[0]}

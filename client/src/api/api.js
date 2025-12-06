@@ -82,6 +82,11 @@ export const ordersAPI = {
     updateStatus: async (id, statusData, token) => {
         const response = await api.patch(`/orders/${id}`, statusData, getAuthHeaders(token));
         return response.data;
+    },
+
+    cancel: async (id, token) => {
+        const response = await api.patch(`/orders/${id}/cancel`, {}, getAuthHeaders(token));
+        return response.data;
     }
 };
 

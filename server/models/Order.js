@@ -10,9 +10,10 @@ const orderSchema = new mongoose.Schema({
     }
   ],
   totalAmount: Number,
-  paymentStatus: { type: String, default: "pending" },
-  orderStatus: { type: String, default: "pending" }, // pending, processing, shipped, delivered
-  shippingAddress: String
+  paymentStatus: { type: String, enum: ["pending", "paid", "failed", "refunded"], default: "pending" },
+  orderStatus: { type: String, enum: ["pending", "processing", "shipped", "delivered", "cancelled"], default: "pending" },
+  shippingAddress: String,
+  paymentIntentId: String
 }, { timestamps: true });
 
 export default mongoose.model("Order", orderSchema);

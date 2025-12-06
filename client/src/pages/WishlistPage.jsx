@@ -181,13 +181,13 @@ export default function WishlistPage() {
                                             </button>
                                             <button
                                                 onClick={() => handleAddToCart(product)}
-                                                disabled={!product.inStock}
-                                                className={`flex-1 px-4 py-3 rounded-xl font-semibold transition-all ${product.inStock
+                                                disabled={!product.stock || product.stock === 0}
+                                                className={`flex-1 px-4 py-3 rounded-xl font-semibold transition-all ${product.stock && product.stock > 0
                                                     ? 'bg-gradient-primary text-white hover:shadow-lg'
                                                     : 'bg-neutral-200 text-neutral-500 cursor-not-allowed'
                                                     }`}
                                             >
-                                                {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+                                                {product.stock && product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
                                             </button>
                                         </div>
                                     </div>

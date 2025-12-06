@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchOrderById, clearCurrentOrder } from "../features/ordersSlice";
+import { fetchOrderById, clearCurrentOrder, cancelOrder } from "../features/ordersSlice";
 import Navbar from "../components/Navbar";
+import { useAlert } from "../context/AlertContext";
 
 export default function OrderDetailsPage() {
     const { id } = useParams();
@@ -10,6 +11,23 @@ export default function OrderDetailsPage() {
     const navigate = useNavigate();
     const { currentOrder, status, error } = useSelector(state => state.orders);
     const { userInfo, profile } = useSelector(state => state.user);
+    const { showAlert, showConfirm } = useAlert();
+
+    const handleCancelOrder = async () => {
+        const confirmed = await showConfirm(
+            'Are you sure you want to cancel this order? This action cannot be undone.',
+            'Cancel Order'
+        );
+
+        if (confirmed) {
+            try {
+                await dispatch(cancelOrder(currentOrder._id)).unwrap();
+                showAlert('Order cancelled successfully', 'success');
+            } catch (err) {
+                showAlert(`Failed to cancel order: ${err.message}`, 'error');
+            }
+        }
+    };
 
     useEffect(() => {
         if (!userInfo) {
@@ -84,12 +102,23 @@ export default function OrderDetailsPage() {
                             Placed on {new Date(createdAt).toLocaleDateString()} at {new Date(createdAt).toLocaleTimeString()}
                         </p>
                     </div>
-                    <div className={`px-4 py-2 rounded-full font-bold text-sm border-2 ${orderStatus === 'delivered' ? 'bg-green-100 text-green-700 border-green-200' :
-                        orderStatus === 'pending' ? 'bg-yellow-100 text-yellow-700 border-yellow-200' :
-                            orderStatus === 'cancelled' ? 'bg-red-100 text-red-700 border-red-200' :
-                                'bg-blue-100 text-blue-700 border-blue-200'
-                        }`}>
-                        {orderStatus.charAt(0).toUpperCase() + orderStatus.slice(1)}
+                    <div className="flex items-center gap-4">
+                        <div className={`px-4 py-2 rounded-full font-bold text-sm border-2 ${orderStatus === 'delivered' ? 'bg-green-100 text-green-700 border-green-200' :
+                            orderStatus === 'pending' ? 'bg-yellow-100 text-yellow-700 border-yellow-200' :
+                                orderStatus === 'cancelled' ? 'bg-red-100 text-red-700 border-red-200' :
+                                    'bg-blue-100 text-blue-700 border-blue-200'
+                            }`}>
+                            {orderStatus.charAt(0).toUpperCase() + orderStatus.slice(1)}
+                        </div>
+
+                        {(orderStatus === 'pending' || orderStatus === 'processing') && (
+                            <button
+                                onClick={handleCancelOrder}
+                                className="px-4 py-2 bg-red-100 text-red-600 border border-red-200 rounded-lg hover:bg-red-200 font-semibold transition-colors"
+                            >
+                                Cancel Order
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -100,7 +129,7 @@ export default function OrderDetailsPage() {
                             <h2 className="text-xl font-bold mb-6">Items Ordered</h2>
                             <div className="space-y-6">
                                 {products.map((item, index) => (
-                                    <div key={index} className="flex gap-4 items-center p-4 bg-white/50 rounded-xl">
+                                    <div key={index} className="flex gap-4 p-4 bg-white/50 rounded-xl md:flex-row flex-col md:items-center items-start ">
                                         <div className="w-20 h-20 bg-neutral-100 rounded-lg overflow-hidden flex-shrink-0">
                                             {item.product?.images?.[0] ? (
                                                 <img src={item.product.images[0]} alt={item.product.name} className="w-full h-full object-cover" />
@@ -143,7 +172,11 @@ export default function OrderDetailsPage() {
                                 <span>Total</span>
                                 <span className="gradient-text">₹{totalAmount.toFixed(2)}</span>
                             </div>
-                            <div className="mt-4 px-4 py-2 bg-green-50 text-green-700 rounded-lg text-sm font-semibold text-center border border-green-200">
+                            <div className={`mt-4 px-4 py-2 rounded-lg text-sm font-semibold text-center border ${paymentStatus === 'succeeded' ? 'bg-green-50 text-green-700 border-green-200' :
+                                paymentStatus === 'failed' ? 'bg-red-50 text-red-700 border-red-200' :
+                                    paymentStatus === 'refunded' ? 'bg-purple-50 text-purple-700 border-purple-200' :
+                                        'bg-yellow-50 text-yellow-700 border-yellow-200'
+                                }`}>
                                 Payment Status: {paymentStatus.toUpperCase()}
                             </div>
                         </div>

@@ -3,13 +3,20 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getUserProfile, updateUserProfile } from "../features/userSlice";
 import Navbar from "../components/Navbar";
+import { fetchUserOrders } from "../features/ordersSlice";
+import { fetchWishlist } from "../features/wishlistSlice";
 
 export default function ProfilePage() {
     const { userInfo, profile, status } = useSelector(state => state.user);
+    const { userOrders } = useSelector(state => state.orders);
+    const { wishlist } = useSelector(state => state.wishlist);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const [isEditing, setIsEditing] = useState(false);
+    const [totalOrders, setTotalOrders] = useState(0);
+    const [wishlistItems, setWishlistItems] = useState(0);
+    const [reviewsWritten, setReviewsWritten] = useState(0);
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -20,6 +27,11 @@ export default function ProfilePage() {
         zipCode: ""
     });
 
+    useEffect(() => {
+        dispatch(fetchUserOrders());
+        dispatch(fetchWishlist());
+    }, [dispatch]);
+
     // Redirect if not logged in and fetch profile
     useEffect(() => {
         if (!userInfo) {
@@ -28,6 +40,25 @@ export default function ProfilePage() {
             dispatch(getUserProfile());
         }
     }, [userInfo, navigate, dispatch]);
+
+    useEffect(() => {
+        if (userOrders) {
+            setTotalOrders(userOrders.length);
+        }
+    }, [userOrders, dispatch]);
+
+    useEffect(() => {
+        if (wishlist) {
+            setWishlistItems(wishlist.length);
+        }
+    }, [wishlist, dispatch]);
+
+    // useEffect(() => {
+    //     if (reviews) {
+    //         setReviewsWritten(reviews.length);
+    //     }
+    // }, [reviews]);
+
 
     // Update form data when profile is loaded
     useEffect(() => {
@@ -284,17 +315,17 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
                     <div className="card text-center">
                         <div className="text-4xl mb-2">📦</div>
-                        <div className="text-3xl font-bold gradient-text">0</div>
+                        <div className="text-3xl font-bold gradient-text">{totalOrders}</div>
                         <div className="text-neutral-600 mt-1">Total Orders</div>
                     </div>
                     <div className="card text-center">
                         <div className="text-4xl mb-2">❤️</div>
-                        <div className="text-3xl font-bold gradient-text">0</div>
+                        <div className="text-3xl font-bold gradient-text">{wishlistItems}</div>
                         <div className="text-neutral-600 mt-1">Wishlist Items</div>
                     </div>
                     <div className="card text-center">
                         <div className="text-4xl mb-2">⭐</div>
-                        <div className="text-3xl font-bold gradient-text">0</div>
+                        <div className="text-3xl font-bold gradient-text">{reviewsWritten}</div>
                         <div className="text-neutral-600 mt-1">Reviews Written</div>
                     </div>
                 </div>

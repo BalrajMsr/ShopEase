@@ -7,8 +7,8 @@ export default function HeroSection() {
     return (
         <section className="relative pt-32 pb-20 px-6 overflow-hidden">
             {/* Animated Background Elements */}
-            <div className="absolute top-20 right-10 w-72 h-72 bg-gradient-accent rounded-full blur-3xl opacity-20 animate-float"></div>
-            <div className="absolute bottom-20 left-10 w-96 h-96 bg-gradient-primary rounded-full blur-3xl opacity-20 animate-float" style={{ animationDelay: '1s' }}></div>
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-200 rounded-full blur-[100px] opacity-30 animate-float-slow -z-10"></div>
+            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-cyan-200 rounded-full blur-[120px] opacity-30 animate-float-medium -z-10"></div>
 
             <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center relative z-10">
                 <div className="animate-fade-in-up">
@@ -20,9 +20,9 @@ export default function HeroSection() {
                         <br />
                         <span className="gradient-text">Live Better</span>
                     </h1>
-                    <p className="text-xl text-neutral-700 mb-8 leading-relaxed">
+                    <p className="text-xl text-neutral-600 mb-8 leading-relaxed max-w-lg">
                         Experience the future of online shopping with our cutting-edge platform.
-                        Fast, secure, and beautifully designed for the modern consumer.
+                        <span className="font-semibold text-primary-600 block mt-2">Fast, secure, and beautifully designed.</span>
                     </p>
                     <div className="flex flex-wrap gap-4">
                         <button

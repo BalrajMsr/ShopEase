@@ -179,14 +179,15 @@ export default function AdminOrdersTable({ orders, onUpdateStatus }) {
                                 <th className="px-6 py-4 text-left">Date</th>
                                 <th className="px-6 py-4 text-left">Items</th>
                                 <th className="px-6 py-4 text-left">Total</th>
-                                <th className="px-6 py-4 text-left">Status</th>
+                                <th className="px-6 py-4 text-left">Order Status</th>
+                                <th className="px-6 py-4 text-left">Payment Status</th>
                                 <th className="px-6 py-4 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredOrders.length === 0 ? (
                                 <tr>
-                                    <td colSpan="7" className="px-6 py-12 text-center text-neutral-600">
+                                    <td colSpan="8" className="px-6 py-12 text-center text-neutral-600">
                                         No orders found matching your filters
                                     </td>
                                 </tr>
@@ -201,7 +202,7 @@ export default function AdminOrdersTable({ orders, onUpdateStatus }) {
                                         <td className="px-6 py-4">
                                             <select
                                                 value={order.orderStatus || order.status}
-                                                onChange={(e) => onUpdateStatus(order._id, e.target.value)}
+                                                onChange={(e) => onUpdateStatus(order._id, { orderStatus: e.target.value })}
                                                 className={`px-3 py-1 rounded-full text-sm font-semibold cursor-pointer ${getStatusColor(order.orderStatus || order.status)}`}
                                             >
                                                 <option value="pending">Pending</option>
@@ -211,9 +212,30 @@ export default function AdminOrdersTable({ orders, onUpdateStatus }) {
                                                 <option value="cancelled">Cancelled</option>
                                             </select>
                                         </td>
+                                        <td className="px-6 py-4">
+                                            <select
+                                                value={order.paymentStatus || 'pending'}
+                                                onChange={(e) => onUpdateStatus(order._id, { paymentStatus: e.target.value })}
+                                                className={`px-3 py-1 rounded-full text-sm font-semibold cursor-pointer ${(order.paymentStatus === 'paid') ? 'bg-green-100 text-green-700' :
+                                                    order.paymentStatus === 'failed' ? 'bg-red-100 text-red-700' :
+                                                        order.paymentStatus === 'refunded' ? 'bg-purple-100 text-purple-700' :
+                                                            'bg-yellow-100 text-yellow-700'
+                                                    }`}
+                                            >
+                                                <option value="pending">Pending</option>
+                                                <option value="paid">Paid</option>
+                                                <option value="failed">Failed</option>
+                                                <option value="refunded">Refunded</option>
+                                            </select>
+                                        </td>
+
                                         <td className="px-6 py-4 text-right">
-                                            <button onClick={() => handleViewOrder(order._id)} className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-                                                View
+                                            <button
+                                                onClick={() => handleViewOrder(order._id)}
+                                                className="p-2 text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                                                title="View Order Details"
+                                            >
+                                                📄
                                             </button>
                                         </td>
                                     </tr>
@@ -222,7 +244,7 @@ export default function AdminOrdersTable({ orders, onUpdateStatus }) {
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }
