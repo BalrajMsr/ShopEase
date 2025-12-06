@@ -20,16 +20,16 @@ export default function Navbar() {
 
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 outline-none focus:outline-none ${scrolled ? 'glass shadow-lg' : 'bg-white/80 backdrop-blur-sm'}`}>
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div className="max-w-7xl mx-auto px-6 py-0 md:py-4 flex justify-between items-center">
         <Link to={user?.user?.role === 'admin' ? "/admin" : "/home"} className="flex items-center gap-2">
-          <img className="w-10 h-10" src={Logo} alt="shop ease logo" />
-          <h1 className="text-2xl font-bold gradient-text">ShopEase</h1>
+          <img className="w-[80px] h-[80px] md:w-[60px] md:h-[60px]" src={Logo} alt="shop ease logo" />
+          <h1 className="hidden md:block text-2xl font-bold gradient-text">ShopEase</h1>
         </Link>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center">
           <Link
             to="/cart"
-            className="relative group flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-white/50 transition-all"
+            className="relative group flex items-center gap-2 px-2 py-2 rounded-xl hover:bg-white/50 transition-all"
           >
             <span className="text-2xl group-hover:scale-110 transition-transform">🛒</span>
             <span className="font-semibold hidden sm:inline">Cart</span>

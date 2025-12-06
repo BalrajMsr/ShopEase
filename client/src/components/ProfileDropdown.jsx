@@ -50,7 +50,7 @@ export default function ProfileDropdown({ user }) {
             {/* Profile Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-white/50 transition-all group"
+                className="flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-white/50 transition-all group"
             >
                 {/* Avatar */}
                 <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md group-hover:scale-110 transition-transform">
