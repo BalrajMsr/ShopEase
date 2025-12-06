@@ -178,7 +178,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            {/* <div className="grid grid-cols-2 gap-4">
               <button
                 type="button"
                 className="px-4 py-3 bg-white border-2 border-neutral-200 rounded-xl font-semibold hover:bg-neutral-50 transition-colors flex items-center justify-center gap-2"
@@ -193,7 +193,7 @@ export default function LoginPage() {
                 <span className="text-xl">📘</span>
                 Facebook
               </button>
-            </div>
+            </div> */}
 
             <div className="text-center text-neutral-600 pt-4">
               {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
