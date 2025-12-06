@@ -19,7 +19,8 @@ const seed = async () => {
       images: [
         "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?q=80&w=1000&auto=format&fit=crop"
       ],
-      category: "Clothing"
+      category: "Clothing",
+      stock: 10,
     },
     {
       id: 2,
@@ -28,7 +29,8 @@ const seed = async () => {
       images: [
         "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?q=80&w=1000&auto=format&fit=crop"
       ],
-      category: "Electronics"
+      category: "Electronics",
+      stock: 10,
     },
     {
       id: 3,
@@ -37,7 +39,8 @@ const seed = async () => {
       images: [
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000&auto=format&fit=crop"
       ],
-      category: "Footwear"
+      category: "Footwear",
+      stock: 10,
     },
     {
       id: 4,
@@ -46,7 +49,8 @@ const seed = async () => {
       images: [
         "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=1000&auto=format&fit=crop&q=60"
       ],
-      category: "Accessories"
+      category: "Accessories",
+      stock: 10,
     },
     {
       id: 5,
@@ -55,7 +59,8 @@ const seed = async () => {
       images: [
         "https://images.unsplash.com/photo-1486401899868-0e435ed85128?w=1000&auto=format&fit=crop"
       ],
-      category: "Electronics"
+      category: "Electronics",
+      stock: 10,
     },
     {
       id: 6,
@@ -64,7 +69,8 @@ const seed = async () => {
       images: [
         "https://plus.unsplash.com/premium_photo-1728158949987-efc83ed54df4?w=1000&auto=format&fit=crop&q=60"
       ],
-      category: "Footwear"
+      category: "Footwear",
+      stock: 10,
     },
     {
       id: 7,
@@ -498,6 +504,7 @@ const seed = async () => {
 
   for (const product of products) {
     delete product.id; // Remove id to avoid duplication issues
+    product.stock = Math.floor(Math.random() * 46) + 5; // random 5–50    
     const existingProduct = await Product.findOne({ name: product.name });
     if (existingProduct) {
       await Product.updateOne({ name: product.name }, product);
