@@ -22,6 +22,22 @@ export default function CartPage() {
   const grandTotal = total + shipping + tax;
 
   const goCheckout = () => navigate("/checkout");
+  
+  // Add loading and error states as needed
+
+  // Loading screen
+  if (cart.status === "loading") {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-neutral-50 via-purple-50 to-cyan-50">
+        <Navbar />
+        <div className="flex flex-col items-center justify-center h-full">
+          <div className="animate-spin rounded-full h-24 w-24 border-t-4 border-b-4 border-purple-400 mb-8"></div>
+          <h2 className="text-2xl font-bold mb-2">Loading your cart...</h2>
+          <p className="text-neutral-600">Please wait while we fetch your items.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-purple-50 to-cyan-50">

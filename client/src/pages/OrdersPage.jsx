@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { fetchUserOrders, cancelOrder } from "../features/ordersSlice";
+import { fetchUserOrders, cancelOrder, reorderItems } from "../features/ordersSlice";
 import Navbar from "../components/Navbar";
 import { useAlert } from "../context/AlertContext";
 
@@ -28,6 +28,28 @@ export default function OrdersPage() {
             } catch (err) {
                 showAlert(`Failed to cancel order: ${err.message}`, 'error');
             }
+        }
+    };
+
+    const handleReorder = async (orderId) => {
+        try {
+            const result = await dispatch(reorderItems(orderId)).unwrap();
+
+            // Check if all items were added successfully
+            const successCount = result.results.filter(r => r.success).length;
+            const failCount = result.results.filter(r => !r.success).length;
+
+            if (failCount === 0) {
+                showAlert(`All ${successCount} items added to cart!`, 'success');
+                navigate('/cart');
+            } else if (successCount > 0) {
+                showAlert(`${successCount} items added to cart. ${failCount} items failed.`, 'warning');
+                navigate('/cart');
+            } else {
+                showAlert('Failed to add items to cart', 'error');
+            }
+        } catch (err) {
+            showAlert(`Failed to reorder: ${err.message}`, 'error');
         }
     };
 
@@ -179,8 +201,11 @@ export default function OrdersPage() {
                                             📄
                                         </button>
                                         {order.orderStatus === 'delivered' && (
-                                            <button className="px-6 py-3 bg-gradient-primary text-white rounded-xl font-semibold hover-lift shadow-md">
-                                                Reorder
+                                            <button
+                                                onClick={() => handleReorder(order._id)}
+                                                className="px-6 py-3 bg-gradient-primary text-white rounded-xl font-semibold hover-lift shadow-md"
+                                            >
+                                                🔄 Reorder
                                             </button>
                                         )}
                                         {order.orderStatus === 'pending' && (

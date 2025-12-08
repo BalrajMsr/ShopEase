@@ -82,14 +82,27 @@ const cartSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // Fetch Cart
+      .addCase(fetchCart.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
       .addCase(fetchCart.fulfilled, (state, action) => {
         if (action.payload) {
           state.items = action.payload;
           localStorage.setItem("cartItems", JSON.stringify(state.items));
         }
+        state.status = "succeeded";
+      })
+      .addCase(fetchCart.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error?.message || "Failed to fetch cart";
       })
 
       // Add to Cart
+      .addCase(addToCart.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
       .addCase(addToCart.fulfilled, (state, action) => {
         if (action.payload.type === 'api') {
           state.items = action.payload.data;
@@ -103,9 +116,18 @@ const cartSlice = createSlice({
           }
         }
         localStorage.setItem("cartItems", JSON.stringify(state.items));
+        state.status = "succeeded";
+      })
+      .addCase(addToCart.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error?.message || "Failed to add to cart";
       })
 
       // Remove from Cart
+      .addCase(removeFromCart.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
       .addCase(removeFromCart.fulfilled, (state, action) => {
         if (action.payload.type === 'api') {
           state.items = action.payload.data;
@@ -114,14 +136,28 @@ const cartSlice = createSlice({
           state.items = state.items.filter(i => i.product !== productId);
         }
         localStorage.setItem("cartItems", JSON.stringify(state.items));
+        state.status = "succeeded";
+      })
+      .addCase(removeFromCart.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error?.message || "Failed to remove from cart";
       })
 
       // Clear Cart
+      .addCase(clearCart.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
       .addCase(clearCart.fulfilled, (state, action) => {
         state.items = [];
         // Always clear local storage to ensure no stale data persists, 
         // regardless of whether we were in API or local mode.
         localStorage.removeItem("cartItems");
+        state.status = "succeeded";
+      })
+      .addCase(clearCart.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error?.message || "Failed to clear cart";
       });
   }
 });

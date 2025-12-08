@@ -25,6 +25,44 @@ export const cancelOrder = createAsyncThunk("orders/cancel", async (id, { getSta
     return await ordersAPI.cancel(id, user.userInfo?.token);
 });
 
+// Reorder - Add all items from an order to cart
+export const reorderItems = createAsyncThunk("orders/reorder", async (orderId, { getState, dispatch }) => {
+    const { orders } = getState();
+
+    // Find the order to reorder
+    const order = orders.userOrders.find(o => o._id === orderId) || orders.currentOrder;
+
+    if (!order || !order.products || order.products.length === 0) {
+        throw new Error("Order not found or has no items");
+    }
+
+    // Import addToCart dynamically to avoid circular dependency
+    const { addToCart } = await import('./cartSlice');
+
+    // Add each product to cart
+    const results = [];
+    for (const item of order.products) {
+        if (item.product && item.product._id) {
+            try {
+                const cartItem = {
+                    product: item.product._id,
+                    name: item.product.name,
+                    price: item.product.price,
+                    images: item.product.images || [],
+                    quantity: item.quantity,
+                    stock: item.product.stock
+                };
+                await dispatch(addToCart(cartItem)).unwrap();
+                results.push({ success: true, product: item.product.name });
+            } catch (error) {
+                results.push({ success: false, product: item.product.name, error: error.message });
+            }
+        }
+    }
+
+    return { orderId, results };
+});
+
 const ordersSlice = createSlice({
     name: "orders",
     initialState: {

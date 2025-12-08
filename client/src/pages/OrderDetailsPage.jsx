@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchOrderById, clearCurrentOrder, cancelOrder } from "../features/ordersSlice";
+import { fetchOrderById, clearCurrentOrder, cancelOrder, reorderItems } from "../features/ordersSlice";
 import Navbar from "../components/Navbar";
 import { useAlert } from "../context/AlertContext";
 
@@ -26,6 +26,28 @@ export default function OrderDetailsPage() {
             } catch (err) {
                 showAlert(`Failed to cancel order: ${err.message}`, 'error');
             }
+        }
+    };
+
+    const handleReorder = async () => {
+        try {
+            const result = await dispatch(reorderItems(currentOrder._id)).unwrap();
+
+            // Check if all items were added successfully
+            const successCount = result.results.filter(r => r.success).length;
+            const failCount = result.results.filter(r => !r.success).length;
+
+            if (failCount === 0) {
+                showAlert(`All ${successCount} items added to cart!`, 'success');
+                navigate('/cart');
+            } else if (successCount > 0) {
+                showAlert(`${successCount} items added to cart. ${failCount} items failed.`, 'warning');
+                navigate('/cart');
+            } else {
+                showAlert('Failed to add items to cart', 'error');
+            }
+        } catch (err) {
+            showAlert(`Failed to reorder: ${err.message}`, 'error');
         }
     };
 
@@ -110,6 +132,15 @@ export default function OrderDetailsPage() {
                             }`}>
                             {orderStatus.charAt(0).toUpperCase() + orderStatus.slice(1)}
                         </div>
+
+                        {orderStatus === 'delivered' && (
+                            <button
+                                onClick={handleReorder}
+                                className="px-4 py-2 bg-gradient-primary text-white rounded-lg hover-lift font-semibold transition-all shadow-md"
+                            >
+                                🔄 Reorder
+                            </button>
+                        )}
 
                         {(orderStatus === 'pending' || orderStatus === 'processing') && (
                             <button
